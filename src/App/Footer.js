@@ -1,8 +1,11 @@
 import React from "react";
-import { connect } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { VisibilityFilters, setVisibilityFilter } from "./redux/actions";
 
-const Link = ({active, children, onClick}) => {
+const Link = ({filter, children}) => {
+    const active = useSelector(state => filter === state.visibilityFilter);
+    const dispatch = useDispatch();
+
     if(active) {
         return <span>{children}</span>
     }
@@ -10,40 +13,21 @@ const Link = ({active, children, onClick}) => {
     return <a href="#"
         onClick={(e) => {
             e.preventDefault();
-            onClick();
+            dispatch(setVisibilityFilter(filter))
         }}
     >
         {children}
     </a>
 }
 
-const mapStateToProps = (state, ownProps) => {
-    return {
-        active: ownProps.filter === state.visibilityFilter
-    }
-}
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        onClick: () => {
-            dispatch(setVisibilityFilter(ownProps.filter))
-        }
-    }
-}
-
-const FilterLink = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Link)
-
 const Footer = () => {
     return <p>
         Show: {" "}
-        <FilterLink filter={VisibilityFilters.SHOW_ALL}>All</FilterLink>
+        <Link filter={VisibilityFilters.SHOW_ALL}>All</Link>
         {", "}
-        <FilterLink filter={VisibilityFilters.SHOW_ACTIVE}>Active</FilterLink>
+        <Link filter={VisibilityFilters.SHOW_ACTIVE}>Active</Link>
         {", "}
-        <FilterLink filter={VisibilityFilters.SHOW_COMPLETED}>Completed</FilterLink>
+        <Link filter={VisibilityFilters.SHOW_COMPLETED}>Completed</Link>
     </p>
 }
 

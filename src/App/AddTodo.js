@@ -1,19 +1,22 @@
 import React from "react";
-import {connect} from 'react-redux'
-import {useRef} from 'react'
-import {addTodo} from './redux/actions'
-const AddTodo = ({dispatch}) => {
+import { useRef, useState } from 'react'
+import { addTodo } from './redux/actions'
+import { useDispatch } from 'react-redux'
+
+const AddTodo = () => {
     const input = useRef(null);
+    const [value, setValue] = useState('');
+    const dispatch = useDispatch();
 
     return <div>
-        <input ref={input}/>
+        <input ref={input} value={value} onChange={() => setValue(input.current.value)} />
         <button onClick={() => {
             dispatch(addTodo(input.current.value));
             input.current.value = ''
-        }} > 
-        Add Todo 
+        }} >
+            Add Todo
         </button>
     </div>
 }
 
-export default connect()(AddTodo)
+export default AddTodo
